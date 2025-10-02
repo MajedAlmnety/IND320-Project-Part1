@@ -24,7 +24,7 @@ IND320-Project-Part1/
 ---
 
 ## Streamlit App
-Live app: [https://ind320-project-part1-mvjrbnbyefycsijdcn3im4.streamlit.app](https://ind320-project-part1-mvjrbnbyefycsijdcn3im4.streamlit.app)
+Live app: [https://ind320-project-part1-mvjrbnbyefycsijdcn3im4.streamlit.app]
 
 This app is deployed automatically from this repository via Streamlit Cloud.  
 Any changes pushed to GitHub are reflected in the live app.
