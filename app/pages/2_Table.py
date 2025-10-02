@@ -1,7 +1,6 @@
 # Page 2 – Table view with a row-wise LineChartColumn for the first month of data
 # One row per numeric column in the CSV.
 # Notes:
-# - Uses @st.cache_data for fast reloads
 # - Tries to auto-detect a time column
 # - Builds a summary table: [variable, first_month (sparkline), count, mean]
 # - Displays raw first-month slice for transparency

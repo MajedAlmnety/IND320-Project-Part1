@@ -36,7 +36,7 @@ try:
     else:
         st.warning("No numeric columns found in the dataset.")
 
-    # Slider example
+    # Slider
     st.subheader("Slider for row selection")
     max_rows = len(df)
     slider_val = st.slider("Pick how many rows to show", 5, min(50, max_rows), 10)
