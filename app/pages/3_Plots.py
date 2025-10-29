@@ -17,6 +17,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import pathlib
 
 st.title("Page 3 – Plots, Filters, Aggregation & Scaling")
 
@@ -65,7 +66,7 @@ def scale_series(s: pd.Series, method: str) -> pd.Series:
     else:  # "None"
         return s
 
-csv_path = "app/open-meteo-subset.csv"
+csv_path = pathlib.Path(__file__).parent.parent / "open-meteo-subset.csv"
 st.caption(f"Loading data from: `{csv_path}`")
 
 try:

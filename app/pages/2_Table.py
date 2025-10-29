@@ -7,7 +7,7 @@
 
 import streamlit as st
 import pandas as pd
-
+import pathlib
 st.title("Page 2 – Table + LineChartColumn (First Month Per Variable)")
 
 @st.cache_data
@@ -26,7 +26,7 @@ def detect_time_col(df: pd.DataFrame):
             continue
     return None
 
-csv_path = "app/open-meteo-subset.csv"
+csv_path = pathlib.Path(__file__).parent.parent / "open-meteo-subset.csv"
 st.caption(f"Loading data from: `{csv_path}`")
 
 try:

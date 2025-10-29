@@ -14,9 +14,11 @@ IND320-Project-Part1/
 │   ├── pages/
 │   │   ├── 2_Table.py          # Page 2: Data table with sparklines
 │   │   ├── 3_Plots.py          # Page 3: Plots with filters
-│   │   └── 4_Extras.py         # Page 4: Extra widgets and charts
+│   │   └── 4_Production_2021.py        
+        └── 5_Extras.py      # Page 4: Extra widgets and charts
 ├── notebook/
 │   └── part1_dashboard_basics.ipynb   # Jupyter Notebook (main development)
+    └── project_work_part2.ipybn 
 ├── requirements.txt
 └── README.md
 ```
@@ -74,3 +76,39 @@ streamlit run app/Home.py
 
 ---
 
+# Project Work Part2 – Data Analysis and Streamlit Dashboard
+
+## Overview
+This project demonstrates a complete data workflow using **Jupyter Notebook** for data analysis and **Streamlit** for web-based visualization.  
+The goal of the project is to prepare and process a dataset, store it in a **MongoDB** database, and build an interactive dashboard that allows users to explore and visualize the data easily.  
+
+The work focuses on combining data engineering, analysis, and visualization into one integrated process.  
+Through this project, I gained experience in working with Python libraries, managing databases, and building user-friendly interfaces for data exploration.
+
+---
+
+## Main Components
+
+### 1. **Jupyter Notebook**
+- Used for data cleaning, transformation, and analysis.  
+- Libraries used: `pandas`, `numpy`, `pyspark`, and `pymongo`.  
+- Connected to a **MongoDB** database to store processed data.  
+- Includes clear comments and Markdown explanations for each step.
+
+### 2. **MongoDB**
+- Acts as the storage system for processed data.  
+- Allows for structured and efficient data retrieval for analysis and visualization.  
+
+### 3. **Streamlit Application**
+- Used to build an interactive dashboard for data visualization.  
+- Integrates charts and graphs built with `matplotlib` and `plotly`.  
+- Users can explore, filter, and interact with the dataset through a simple web interface.  
+
+---
+
+## Setup and Installation
+
+1. Clone or download the project folder.  
+2. Install the required dependencies:
+   ```bash
+   pip install pandas numpy pyspark pymongo streamlit matplotlib plotly python-dotenv
