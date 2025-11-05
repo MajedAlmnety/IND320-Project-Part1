@@ -13,8 +13,8 @@ st.write(
 )
 
 st.markdown("### Links")
-st.markdown("- GitHub: *add your repository URL here*")
-st.markdown("- Streamlit App: *add your deployed app URL here*")
+st.markdown("- GitHub: *..*")
+st.markdown("- Streamlit App: *..*")
 
 
 
