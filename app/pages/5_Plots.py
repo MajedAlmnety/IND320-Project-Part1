@@ -8,10 +8,10 @@
 #     * Index (first=100)
 #     * None (raw values)
 #
-# Design choices:
-# - Scaling is applied on the filtered and aggregated subset (fair comparison for the visible range)
-# - Matplotlib is used; titles/labels/legends are kept clean and readable
-# - We avoid hard-coded colors so default Matplotlib palette is used
+# Notes:
+# - Scaling is applied after filtering/aggregation (fair comparison in the visible range)
+# - Matplotlib is used; clean titles/labels/legends
+# - No hard-coded colors (use Matplotlib defaults)
 
 import streamlit as st
 import pandas as pd
@@ -23,11 +23,11 @@ st.title("Page 3 – Plots, Filters, Aggregation & Scaling")
 
 @st.cache_data
 def load_csv(path: str) -> pd.DataFrame:
-    """Load CSV using pandas (cached)."""
+    """Load CSV with caching."""
     return pd.read_csv(path)
 
 def detect_time_col(df: pd.DataFrame):
-    """Return the first column that can be parsed as datetime."""
+    """Return the first column that parses as datetime, or None."""
     for c in ["time", "date", "datetime", "timestamp"] + list(df.columns):
         try:
             pd.to_datetime(df[c], errors="raise")
@@ -37,7 +37,7 @@ def detect_time_col(df: pd.DataFrame):
     return None
 
 def resample_df(df: pd.DataFrame, time_col: str, rule: str | None, agg: str = "mean") -> pd.DataFrame:
-    """Resample dataframe by rule ('W', 'M', or None) using the given aggregation."""
+    """Resample by rule ('W', 'M', or None) using the chosen aggregation."""
     if rule is None:
         return df.copy()
     dfi = df.set_index(time_col)
@@ -52,7 +52,7 @@ def resample_df(df: pd.DataFrame, time_col: str, rule: str | None, agg: str = "m
     return out.reset_index()
 
 def scale_series(s: pd.Series, method: str) -> pd.Series:
-    """Scale a series to make multi-series plotting fair when scales differ."""
+    """Scale a numeric series for multi-series plotting."""
     s = s.astype(float)
     if method == "Min-Max (0–1)":
         rng = s.max() - s.min()
@@ -66,21 +66,24 @@ def scale_series(s: pd.Series, method: str) -> pd.Series:
     else:  # "None"
         return s
 
+# CSV path: app root / open-meteo-subset.csv
 csv_path = pathlib.Path(__file__).parent.parent / "open-meteo-subset.csv"
 st.caption(f"Loading data from: `{csv_path}`")
 
 try:
-    # 1) Load and validate
+    # 1) Load and validate dataset
     df = load_csv(csv_path)
     time_col = detect_time_col(df)
     if time_col is None:
         st.warning("Could not detect a time column. Ensure your CSV has a time-like column.")
         st.stop()
 
+    # Normalize time column and sort
     df = df.copy()
     df[time_col] = pd.to_datetime(df[time_col], errors="coerce")
     df = df.dropna(subset=[time_col]).sort_values(time_col)
 
+    # Identify numeric columns to plot
     num_cols = [
         c for c in df.columns
         if c != time_col and pd.api.types.is_numeric_dtype(df[c])
@@ -89,7 +92,7 @@ try:
         st.warning("No numeric columns to plot.")
         st.stop()
 
-    # 2) Month range selector (default: first month only)
+    # 2) Month range selector (defaults to first month only)
     months_period = df[time_col].dt.to_period("M")
     months_unique = sorted(months_period.unique())
     months_labels = [str(p) for p in months_unique]
@@ -104,7 +107,7 @@ try:
         index=0,
     )
 
-    default_range = (months_labels[0], months_labels[0])  # first → first
+    default_range = (months_labels[0], months_labels[0])
     m_start, m_end = st.select_slider(
         "Select a month range:",
         options=months_labels,
@@ -120,7 +123,7 @@ try:
     rule = None if agg_choice == "Raw" else ("W" if "Weekly" in agg_choice else "M")
     period_label = "raw" if rule is None else ("weekly" if rule == "W" else "monthly")
 
-    # 3) Filter by month range then aggregate
+    # 3) Filter by month range and aggregate
     mask = (months_period >= pd.Period(m_start)) & (months_period <= pd.Period(m_end))
     df_sel = df.loc[mask]
     if df_sel.empty:
@@ -129,11 +132,12 @@ try:
 
     df_plot = resample_df(df_sel, time_col, rule=rule, agg="mean")
 
-    # 4) Plot
+    # 4) Plot the selection
     st.subheader("Plot")
     fig, ax = plt.subplots(figsize=(10, 4))
 
     if selection == "All columns":
+        # Apply scaling per series to enable fair comparison
         scale_method = st.radio(
             "Scaling (only when plotting all columns):",
             ["Min-Max (0–1)", "Z-Score (σ)", "Index (first=100)", "None"],
@@ -145,15 +149,16 @@ try:
             ax.plot(df_plot[time_col], y, label=col)
 
         ax.set_ylabel({
-                          "Min-Max (0–1)": "Normalized (0–1)",
-                          "Z-Score (σ)": "Z-score (σ)",
-                          "Index (first=100)": "Index (first=100)",
-                          "None": "Value",
-                      }[scale_method])
+            "Min-Max (0–1)": "Normalized (0–1)",
+            "Z-Score (σ)": "Z-score (σ)",
+            "Index (first=100)": "Index (first=100)",
+            "None": "Value",
+        }[scale_method])
         ax.set_title(f"All columns — {m_start} → {m_end}  ({period_label})")
         ax.legend(loc="best", ncols=2, fontsize=9)
 
     else:
+        # Single-column plot (raw values)
         ax.plot(df_plot[time_col], df_plot[selection].astype(float))
         ax.set_ylabel(selection)
         ax.set_title(f"{selection} — {m_start} → {m_end}  ({period_label})")
@@ -168,4 +173,5 @@ except FileNotFoundError:
         "Place the CSV inside the `app/` folder."
     )
 except Exception as e:
+    # Show the full exception in the app for easier debugging
     st.exception(e)
