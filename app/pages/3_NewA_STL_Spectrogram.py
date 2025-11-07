@@ -11,10 +11,8 @@ def load_csv(path: str | Path) -> pd.DataFrame:
 
 # Determine project root and CSV file path
 # ROOT points to the parent folder of the current script (e.g., 'app/')
-ROOT = Path(__file__).resolve().parents[1]
-csv_path = ROOT / "elhub_production.csv"
-
-# Validate that the CSV file exists before loading
+ROOT = Path(__file__).resolve().parents[2]
+csv_path = ROOT /"notebook"/ "elhub_production.csv" # Validate that the CSV file exists before loading
 if not csv_path.exists():
     st.error(f"CSV not found at: {csv_path}")
     st.stop()
