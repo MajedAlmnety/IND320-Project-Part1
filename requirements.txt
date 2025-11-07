@@ -10,3 +10,4 @@ pyspark
 streamlit
 scipy
 statsmodels
+scikit-learn
