@@ -25,53 +25,58 @@ def plot_temperature_outliers(df, column="temperature_2m (°C)",
     """
 
     # Ensure the column exists
+   
     if column not in df.columns:
         raise ValueError(f"Column '{column}' not found in DataFrame")
 
-    # --- Step 1: Apply DCT ---
     temp = df[column].values
     temp_dct = dct(temp, norm="ortho")
 
-    # Determine cutoff frequency index
     N = len(temp_dct)
     cutoff_index = int(N * cutoff)
-    
-    # Zero out low frequencies to keep only rapid variations (high-pass)
-    temp_dct[:cutoff_index] = 0
 
-    # --- Step 2: Inverse DCT to reconstruct the filtered signal ---
-    temp_filtered = idct(temp_dct, norm="ortho")
+    # --- LOW-PASS TREND ---
+    trend_dct = np.copy(temp_dct)
+    trend_dct[cutoff_index:] = 0              # keep only low frequencies
+    trend = idct(trend_dct, norm="ortho")     # smooth trend estimate
 
-    # --- Step 3: Compute MAD-based bounds for anomaly detection ---
-    median_val = np.median(temp_filtered)
-    mad = np.median(np.abs(temp_filtered - median_val))
-    lower_bound = median_val - n_std * mad
-    upper_bound = median_val + n_std * mad
+    # --- MAD THRESHOLDS ---
+    mad = np.median(np.abs(temp - trend))
+    upper_bound = trend + n_std * mad
+    lower_bound = trend - n_std * mad
 
-    # Identify outliers
-    is_outlier = (temp_filtered < lower_bound) | (temp_filtered > upper_bound)
+    # --- OUTLIERS ---
+    is_outlier = (temp < lower_bound) | (temp > upper_bound)
     outliers = df[is_outlier]
 
-    # --- Step 4: Plot results ---
-    plt.figure(figsize=(14, 5))
-    plt.plot(df["time"], temp, label="Temperature (°C)", color="#8ecae6", alpha=0.8)
-    plt.scatter(outliers["time"], outliers[column], color="red", label="Outliers", s=12)
-    plt.title("Temperature vs Time with Outliers (DCT High-Pass Filter)")
+    # --- PLOT ---
+    plt.figure(figsize=(14, 6))
+    plt.plot(df["time"], temp, label="Temperature (°C)", alpha=0.8)
+
+    plt.plot(df["time"], trend, label="Trend (low-pass)", alpha=0.9,color="lime" )
+
+    plt.plot(df["time"], upper_bound, "--", linewidth=1, color="tomato",
+             label="Upper SPC limit")
+    plt.plot(df["time"], lower_bound, "--", linewidth=1,
+             label="Lower SPC limit", color="tomato")
+
+    plt.scatter(outliers["time"], outliers[column], color="teal", s=12, 
+                label="Outliers")
+
+    plt.title("Temperature with Time-Varying SPC Limits (Low-Pass DCT Trend)")
     plt.xlabel("Time")
     plt.ylabel("Temperature (°C)")
     plt.legend()
     plt.grid(True)
+    plt.tight_layout()
     plt.show()
 
-    # --- Step 5: Summary statistics ---
     if show_summary:
         print(f"Number of outliers: {len(outliers)}")
         print(f"Percentage of data: {100 * len(outliers) / len(df):.2f}%")
-        print(f"Lower bound: {round(lower_bound, 2)} | Upper bound: {round(upper_bound, 2)}")
+        print(f"MAD: {mad:.3f}")
 
     return outliers
-
-
 # Function for Seasonal Trend Analysis using STL
 
 import pandas as pd
