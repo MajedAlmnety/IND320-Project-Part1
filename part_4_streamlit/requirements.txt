@@ -4,3 +4,14 @@ pandas
 plotly
 python-dotenv
 statsmodels
+numpy
+matplotlib
+seaborn
+requests
+pandas
+python-dotenv
+pymongo
+plotly
+pyspark
+streamlit
+folium
