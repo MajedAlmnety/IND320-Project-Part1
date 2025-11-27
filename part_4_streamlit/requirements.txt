@@ -16,3 +16,4 @@ pyspark
 streamlit
 folium
 streamlit-folium
+shapely
