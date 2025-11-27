@@ -168,7 +168,7 @@ for var in meteo_vars:
     # Energy series (main y-axis)
     fig.add_trace(go.Scatter(
         x=df.index, y=df[energy_col],
-        name="Energy", line=dict(color="#D6C467")
+        name="Energy", line=dict(color="#54EB78")
     ))
     # Weather series (secondary y-axis)
     fig.add_trace(go.Scatter(
