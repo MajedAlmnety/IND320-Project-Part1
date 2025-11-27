@@ -15,3 +15,4 @@ plotly
 pyspark
 streamlit
 folium
+streamlit-folium
