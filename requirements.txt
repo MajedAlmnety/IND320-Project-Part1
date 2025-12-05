@@ -9,3 +9,6 @@ plotly
 pyspark
 streamlit
 folium
+scipy
+statsmodels
+scikit-learn

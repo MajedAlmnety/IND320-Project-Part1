@@ -21,3 +21,5 @@ Thumbs.db
 
 # Streamlit / secrets
 .streamlit/
+.virtual_documents/
+.env
