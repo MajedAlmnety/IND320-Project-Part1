@@ -112,3 +112,21 @@ Through this project, I gained experience in working with Python libraries, mana
 2. Install the required dependencies:
    ```bash
    pip install pandas numpy pyspark pymongo streamlit matplotlib plotly python-dotenv
+
+# IND320 Project – Part 3: Advanced Data Analytics & Streamlit Dashboard
+
+This repository contains **Part 3** of the IND320 project, extending previous work by integrating real-time data from the **Open-Meteo API**, performing **advanced analyses** in Jupyter Notebook, and enhancing the **Streamlit dashboard** with new interactive pages and visual analytics.
+
+---
+
+## Objectives
+- Connect to the **Open-Meteo API** for dynamic weather data retrieval.  
+- Implement analytical functions for:
+  - Outlier detection (SPC)
+  - Anomaly detection (LOF)
+  - Seasonal-Trend decomposition (STL)
+  - Spectrogram analysis  
+- Extend and restructure the Streamlit app to include new analysis pages and UI features.
+
+
+

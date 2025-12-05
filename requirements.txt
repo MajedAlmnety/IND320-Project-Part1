@@ -8,3 +8,6 @@ pymongo
 plotly
 pyspark
 streamlit
+scipy
+statsmodels
+scikit-learn
